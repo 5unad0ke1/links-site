@@ -131,14 +131,12 @@ const links = data.links ?? [];
         border-radius: 2px;
         text-decoration: none;
         color: var(--accent);
-        transition: border-color 0.15s, background 0.15s, text-shadow 0.15s;
         font-size: 13px;
       }
 
       .link-item a:hover {
         border-color: var(--accent-dim);
         background: rgba(255,119,45,0.05);
-        text-shadow: 0 0 8px rgba(255,119,45,0.6);
       }
 
       .link-item a:hover .link-cmd { color: var(--accent); }
@@ -167,7 +165,6 @@ const links = data.links ?? [];
         background: var(--accent);
         vertical-align: text-bottom;
         animation: blink 1s step-end infinite;
-        box-shadow: 0 0 6px rgba(255,119,45,0.8);
       }
       @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
