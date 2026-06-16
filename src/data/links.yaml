@@ -17,6 +17,10 @@ links:
     name: GitHub
     url: https://github.com/5unad0ke1
 
+  - cmd: ./gitty.sh
+    name: gitty
+    url: https://gitty-code.com/user/5unad0ke1
+
   - cmd: ./twitter.sh
     name: Twitter / X
     url: https://x.com/5unad0ke1
