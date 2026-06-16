@@ -1,0 +1,39 @@
+# ─────────────────────────────────────────────
+#  サイトのリンク設定 / Link configuration
+#  ここを編集するだけでトップページのリンクが更新されます。
+# ─────────────────────────────────────────────
+
+site:
+  user: 砂時計 / 5unad0ke1         
+  whoami: 砂時計です。ゲームを作っていたりします。
+  year: 2026
+
+# リンク一覧。上から順に表示されます。
+# - cmd:  ターミナル風に表示するコマンド名 (例: ./github.sh)
+#   name: リンクの表示名
+#   url:  遷移先 URL
+links:
+#  - cmd: ./github.sh
+#    name: GitHub
+#    url: https://github.com/5unad0ke1
+
+  - cmd: ./twitter.sh
+    name: Twitter / X
+    url: https://x.com/5unad0ke1
+
+  - cmd: ./unityroom.sh
+    name: unityroom
+    url: https://unityroom.com/users/5unad0ke1
+
+#  - cmd: ./portfolio.sh
+#    name: Portfolio
+#    url: https://portfolio.sunadokei.dev
+
+  - cmd: ./zenn.sh
+    name: Zenn
+    url: https://zenn.dev/5unad0ke1
+
+  - cmd: ./unityplay.sh
+    name: Unity Play
+    url: https://play.unity.com/u/sunad0ke1
+
