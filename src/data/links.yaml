@@ -13,27 +13,30 @@ site:
 #   name: リンクの表示名
 #   url:  遷移先 URL
 links:
-#  - cmd: ./github.sh
-#    name: GitHub
-#    url: https://github.com/5unad0ke1
-
   - cmd: ./twitter.sh
     name: Twitter / X
     url: https://x.com/5unad0ke1
 
-  - cmd: ./unityroom.sh
-    name: unityroom
-    url: https://unityroom.com/users/5unad0ke1
-
-#  - cmd: ./portfolio.sh
-#    name: Portfolio
-#    url: https://portfolio.sunadokei.dev
+  - cmd: ./github.sh
+    name: GitHub
+    url: https://github.com/5unad0ke1
 
   - cmd: ./zenn.sh
     name: Zenn
     url: https://zenn.dev/5unad0ke1
 
+  - cmd: ./unityroom.sh
+    name: unityroom
+    url: https://unityroom.com/users/5unad0ke1
+
   - cmd: ./unityplay.sh
     name: Unity Play
     url: https://play.unity.com/u/sunad0ke1
 
+  - cmd: ./gitty.sh
+    name: gitty
+    url: https://gitty-code.com/user/5unad0ke1
+
+  - cmd: ./portfolio.sh
+    name: Portfolio (準備中)
+    url: https://portfolio.sunadokei.dev
