@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://5unad0ke1.github.io/',
-  base: '/links-site/',
+  site: 'https://links.sunadokei.dev/',
+  base: '/',
   trailingSlash: 'always',
   output: 'static',
 });
