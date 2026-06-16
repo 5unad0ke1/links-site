@@ -29,10 +29,6 @@ links:
     name: unityroom
     url: https://unityroom.com/users/5unad0ke1
 
-#  - cmd: ./portfolio.sh
-#    name: Portfolio
-#    url: https://portfolio.sunadokei.dev
-
   - cmd: ./unityplay.sh
     name: Unity Play
     url: https://play.unity.com/u/sunad0ke1
@@ -40,3 +36,7 @@ links:
   - cmd: ./gitty.sh
     name: gitty
     url: https://gitty-code.com/user/5unad0ke1
+
+  - cmd: ./portfolio.sh
+    name: Portfolio (準備中)
+    url: https://portfolio.sunadokei.dev
