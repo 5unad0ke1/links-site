@@ -30,11 +30,11 @@ links:
     url: https://unityroom.com/users/5unad0ke1
 
   - cmd: ./unityplay.sh
-    name: Unity Play
+    name: UnityPlay
     url: https://play.unity.com/u/sunad0ke1
 
   - cmd: ./gitty.sh
-    name: gitty
+    name: Gitty
     url: https://gitty-code.com/user/5unad0ke1
 
   - cmd: ./portfolio.sh
