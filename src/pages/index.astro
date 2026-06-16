@@ -177,9 +177,9 @@ const links = data.links ?? [];
         white-space: nowrap;
         border-right: none;
         width: 0;
-        animation: typing 1.8s steps(24, end) 0.3s forwards;
+        animation: typing 0.5s steps(18, end) 0.3s forwards;
       }
-      @keyframes typing { from{width:0} to{width:100%} }
+      @keyframes typing { from{width:0} to{width:20%} }
 
       /* ─── 実行フィードバック (JS制御) ─── */
       .exec-toast {
@@ -228,6 +228,7 @@ const links = data.links ?? [];
       <!-- whoami -->
       <div class="cmd-line">
         <span class="prompt">~/links $</span>
+
         <span class="cmd-text typewriter">whoami</span>
       </div>
       <div class="output-line">
