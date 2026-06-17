@@ -19,9 +19,11 @@ const links = data.links ?? [];
     <!-- FOUC防止: レンダリング前にテーマを適用 -->
     <script is:inline>
       (function() {
+        const VALID = ['light', 'dark'];
         const saved = localStorage.getItem('theme');
         const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', saved ?? preferred);
+        const theme = VALID.includes(saved) ? saved : preferred;
+        document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
     <style>
@@ -353,18 +355,25 @@ const links = data.links ?? [];
   const themeToggle = document.getElementById('theme-toggle');
   const themeBadge  = document.getElementById('theme-badge');
 
-  function setTheme(theme: string) {
+  const VALID_THEMES = ['light', 'dark'] as const;
+  type Theme = typeof VALID_THEMES[number];
+
+  function normalizeTheme(value: string | null | undefined): Theme {
+    return VALID_THEMES.includes(value as Theme) ? (value as Theme) : 'dark';
+  }
+
+  function setTheme(theme: Theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     if (themeBadge) themeBadge.textContent = `[${theme}]`;
   }
 
-  // 初期バッジ表示
-  const initialTheme = document.documentElement.getAttribute('data-theme') ?? 'dark';
+  // 初期バッジ表示 (head側スクリプトで設定済みの値を正規化して使用)
+  const initialTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'));
   if (themeBadge) themeBadge.textContent = `[${initialTheme}]`;
 
   themeToggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') ?? 'dark';
+    const current = normalizeTheme(document.documentElement.getAttribute('data-theme'));
     setTheme(current === 'dark' ? 'light' : 'dark');
   });
 
