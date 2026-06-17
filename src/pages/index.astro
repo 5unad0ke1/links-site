@@ -16,17 +16,46 @@ const links = data.links ?? [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>砂時計links</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- FOUC防止: レンダリング前にテーマを適用 -->
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', saved ?? preferred);
+      })();
+    </script>
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+      /* ─── ダークモード (デフォルト) ─── */
       :root {
         --accent:     #ff772d;
         --accent-dim: #99461b;
         --accent-mid: #ff9355;
         --bg:         #0a0a0a;
         --bg-card:    #111;
+        --bg-bar:     #1f150f;
         --border:     #3d2a1e;
+        --glow:       rgba(255,119,45,0.04);
+        --scanline:   rgba(0,0,0,0.15);
+        --hover-bg:   rgba(255,119,45,0.05);
+        --active-bg:  rgba(255,119,45,0.12);
         --mono:       'Fira Code', monospace;
+      }
+
+      /* ─── ライトモード (モノクロ) ─── */
+      [data-theme="light"] {
+        --accent:     #1a1a1a;
+        --accent-dim: #666666;
+        --accent-mid: #333333;
+        --bg:         #f5f5f5;
+        --bg-card:    #e8e8e8;
+        --bg-bar:     #d0d0d0;
+        --border:     #b0b0b0;
+        --glow:       rgba(0,0,0,0.02);
+        --scanline:   rgba(0,0,0,0.03);
+        --hover-bg:   rgba(0,0,0,0.05);
+        --active-bg:  rgba(0,0,0,0.12);
       }
 
       html, body {
@@ -41,16 +70,17 @@ const links = data.links ?? [];
           0deg,
           transparent,
           transparent 2px,
-          rgba(0,0,0,0.15) 2px,
-          rgba(0,0,0,0.15) 4px
+          var(--scanline) 2px,
+          var(--scanline) 4px
         );
+        transition: background-color 0.2s, color 0.2s;
       }
 
       /* フォスファーグロー */
       body::before {
         content: '';
         position: fixed; inset: 0;
-        background: radial-gradient(ellipse at center, rgba(255,119,45,0.04) 0%, transparent 70%);
+        background: radial-gradient(ellipse at center, var(--glow) 0%, transparent 70%);
         pointer-events: none;
         z-index: 0;
       }
@@ -67,10 +97,11 @@ const links = data.links ?? [];
       .window {
         border: 1px solid var(--border);
         overflow: hidden;
+        transition: border-color 0.2s;
       }
 
       .window-bar {
-        background: #1f150f;
+        background: var(--bg-bar);
         border-bottom: 1px solid var(--border);
         padding: 0.4rem 0.75rem;
         font-size: 11px;
@@ -79,6 +110,7 @@ const links = data.links ?? [];
         align-items: center;
         gap: 0.5rem;
         letter-spacing: 0.05em;
+        transition: background-color 0.2s;
       }
 
       .window-body {
@@ -91,6 +123,7 @@ const links = data.links ?? [];
         gap: 0.5rem;
         margin-bottom: 0.25rem;
         font-size: 13px;
+        align-items: center;
       }
       .prompt { color: var(--accent-dim); user-select: none; }
       .cmd-text { color: var(--accent); }
@@ -132,20 +165,48 @@ const links = data.links ?? [];
         text-decoration: none;
         color: var(--accent);
         font-size: 13px;
+        transition: background-color 0.15s, border-color 0.15s;
       }
 
       .link-item a:hover {
         border-color: var(--accent-dim);
-        background: rgba(255,119,45,0.05);
+        background: var(--hover-bg);
       }
 
       .link-item a:hover .link-cmd { color: var(--accent); }
-      .link-item a:active { background: rgba(255,119,45,0.12); }
+      .link-item a:active { background: var(--active-bg); }
 
       .link-dollar { color: var(--accent-dim); user-select: none; }
       .link-cmd    { color: var(--accent-mid); }
       .link-arrow  { color: var(--accent-dim); margin-left: auto; font-size: 11px; }
       .link-name   { color: var(--accent); }
+
+      /* ─── テーマ切替ボタン ─── */
+      .theme-toggle-btn {
+        background: none;
+        border: none;
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--accent);
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .theme-toggle-btn:hover .theme-toggle-cmd { color: var(--accent-mid); }
+      .theme-badge {
+        color: var(--accent-dim);
+        font-size: 12px;
+        border: 1px solid var(--border);
+        padding: 0 0.35rem;
+        border-radius: 2px;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .theme-toggle-btn:hover .theme-badge {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+      }
 
       /* ─── フッター ─── */
       .footer-line {
@@ -260,7 +321,14 @@ const links = data.links ?? [];
         ))}
       </ul>
 
-      <!-- カーソル行 -->
+      <!-- テーマ切替 & カーソル行 -->
+      <div class="cmd-line">
+        <span class="prompt">~/links $</span>
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="テーマ切替">
+          <span class="theme-toggle-cmd">theme --toggle</span>
+          <span class="theme-badge" id="theme-badge">[dark]</span>
+        </button>
+      </div>
       <div class="cmd-line">
         <span class="prompt">~/links $</span>
         <span class="cursor"></span>
@@ -281,7 +349,26 @@ const links = data.links ?? [];
 <div class="exec-toast" id="toast"></div>
 
 <script>
-  // リンククリック時にターミナル風の実行トーストを表示してから遷移する
+  // ─── テーマ切替 ───
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeBadge  = document.getElementById('theme-badge');
+
+  function setTheme(theme: string) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    if (themeBadge) themeBadge.textContent = `[${theme}]`;
+  }
+
+  // 初期バッジ表示
+  const initialTheme = document.documentElement.getAttribute('data-theme') ?? 'dark';
+  if (themeBadge) themeBadge.textContent = `[${initialTheme}]`;
+
+  themeToggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') ?? 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // ─── リンククリック時トースト ───
   const toast = document.getElementById('toast');
 
   document.querySelectorAll('.link-item a').forEach((a) => {
