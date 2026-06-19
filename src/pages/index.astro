@@ -21,11 +21,13 @@ const description = String(site.whoami ?? '').replace(/\s+/g, ' ').trim();
     <!-- FOUC防止: レンダリング前にテーマを適用 -->
     <script is:inline>
       (function() {
-        const VALID = ['light', 'dark'];
+        const VALID = ['auto', 'light', 'dark'];
         const saved = localStorage.getItem('theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        const theme = VALID.includes(saved) ? saved : preferred;
-        document.documentElement.setAttribute('data-theme', theme);
+        const stored = VALID.includes(saved) ? saved : 'auto';
+        if (!VALID.includes(saved)) localStorage.setItem('theme', 'auto');
+        const pref = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        const resolved = stored === 'auto' ? pref : stored;
+        document.documentElement.setAttribute('data-theme', resolved);
       })();
     </script>
     <style>
@@ -331,7 +333,7 @@ const description = String(site.whoami ?? '').replace(/\s+/g, ' ').trim();
         <span class="prompt">~/links $</span>
         <button class="theme-toggle-btn" id="theme-toggle" aria-label="テーマ切替">
           <span class="theme-toggle-cmd">theme --toggle</span>
-          <span class="theme-badge" id="theme-badge">[dark]</span>
+          <span class="theme-badge" id="theme-badge">[auto]</span>
         </button>
       </div>
       <div class="cmd-line">
@@ -359,26 +361,42 @@ const description = String(site.whoami ?? '').replace(/\s+/g, ' ').trim();
   const themeToggle = document.getElementById('theme-toggle');
   const themeBadge  = document.getElementById('theme-badge');
 
-  const VALID_THEMES = ['light', 'dark'] as const;
+  const VALID_THEMES = ['auto', 'light', 'dark'] as const;
   type Theme = typeof VALID_THEMES[number];
+  const THEME_CYCLE: Theme[] = ['auto', 'dark', 'light'];
 
   function normalizeTheme(value: string | null | undefined): Theme {
-    return VALID_THEMES.includes(value as Theme) ? (value as Theme) : 'dark';
+    return VALID_THEMES.includes(value as Theme) ? (value as Theme) : 'auto';
+  }
+
+  function resolveTheme(theme: Theme): 'light' | 'dark' {
+    if (theme === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    return theme;
   }
 
   function setTheme(theme: Theme) {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', resolveTheme(theme));
     localStorage.setItem('theme', theme);
     if (themeBadge) themeBadge.textContent = `[${theme}]`;
   }
 
-  // 初期バッジ表示 (head側スクリプトで設定済みの値を正規化して使用)
-  const initialTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'));
+  // 初期バッジ表示 (localStorageの論理テーマ値を使用)
+  const initialTheme = normalizeTheme(localStorage.getItem('theme'));
   if (themeBadge) themeBadge.textContent = `[${initialTheme}]`;
 
   themeToggle?.addEventListener('click', () => {
-    const current = normalizeTheme(document.documentElement.getAttribute('data-theme'));
-    setTheme(current === 'dark' ? 'light' : 'dark');
+    const current = normalizeTheme(localStorage.getItem('theme'));
+    const next = THEME_CYCLE[(THEME_CYCLE.indexOf(current) + 1) % THEME_CYCLE.length];
+    setTheme(next);
+  });
+
+  // autoモード時にシステムテーマ変更を追従
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (normalizeTheme(localStorage.getItem('theme')) === 'auto') {
+      document.documentElement.setAttribute('data-theme', resolveTheme('auto'));
+    }
   });
 
   // ─── リンククリック時トースト ───
