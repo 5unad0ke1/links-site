@@ -27,6 +27,10 @@ links:
     name: Zenn
     url: https://zenn.dev/5unad0ke1
 
+  - cmd: ./docswell.sh
+    name: Docswell
+    url: https://www.docswell.com/user/5unad0ke1
+
   - cmd: ./unityroom.sh
     name: unityroom
     url: https://unityroom.com/users/5unad0ke1
